@@ -17,12 +17,24 @@ function validate(xml) {
     $.each(chord.notes, function(i, note) {
       var range = VOCAL_RANGE[i];
       if (range.low > note.magnitude()) {
-        violations.push({ error: note + " too low for voice in measure " + chord.measure});
+        violations.push({ error: "Too low for vocal range: measure " + chord.measure + " " + note});
       }
       else if (range.high < note.magnitude()) {
-        violations.push({ error: note + " too high for voice in measure " + chord.measure});
+        violations.push({ error: "Too high for vocal range: measure " + chord.measure + " " + note});
       }
     });
+    
+    if (chord.notes.length == 4) {
+      for (var i = 0; i < 3; i++) {
+        var spacing = SPACING[i];
+        var n1 = chord.notes[i];
+        var n2 = chord.notes[i + 1];
+        if (n2.magnitude() - n1.magnitude() > spacing) {
+          violations.push({ error: "Excessive spacing between " + VOICE_NAME[i] + " and " + VOICE_NAME[i + 1] + ": measure " + chord.measure + " " + n1 + " > " + n2});
+        }
+      }
+    }
+    
     var chordIntervals = chord.getIntervals();
     if (prevChordIntervals) {
       // Compare current chord with prev to find parallel 5ths, 8ves
@@ -65,13 +77,12 @@ function parseMeasures(xml) {
   return measures;
 }
 
-var NOTE_OFFSETS = { 'A' : 9, 'B' : 11, 'C' : 0, 'D' : 2, 'E' : 4, 'F' : 5, 'G' : 7 };
-var VOCAL_RANGE = {
-  0 : { low: newNote('E', 2, 0, 0).magnitude(), high: newNote('C', 4, 0, 0).magnitude() },
-  1 : { low: newNote('C', 2, 0, 0).magnitude(), high: newNote('F', 4, 0, 0).magnitude() },
-  2 : { low: newNote('G', 3, 0, 0).magnitude(), high: newNote('D', 5, 0, 0).magnitude() },
-  3 : { low: newNote('C', 4, 0, 0).magnitude(), high: newNote('A', 7, 0, 0).magnitude() }
-}
+var NOTE_OFFSETS = { 'C' : 0, 'D' : 2, 'E' : 4, 'F' : 5, 'G' : 7, 'A' : 9, 'B' : 11 };
+var VOCAL_RANGE = $.map(['E2-C4', 'C3-F4', 'G3-D5', 'C4-A7'], function(pair) {
+  return { low: newNote(pair[0], +pair[1], 0, 0).magnitude(), high: newNote(pair[3], +pair[4], 0, 0).magnitude() };
+});
+var SPACING = { 0: 17, 1: 12, 2: 12, 3: 12 };
+var VOICE_NAME = { 0: 'Bass', 1: 'Tenor', 2: 'Alto', 3: 'Soprano' };
 
 function newInterval(lowNote, highNote, lowVoice, highVoice) {
   return {
@@ -80,7 +91,7 @@ function newInterval(lowNote, highNote, lowVoice, highVoice) {
     lowVoice: lowVoice,
     highVoice: highVoice,
     delta: highNote.magnitude() - lowNote.magnitude(),
-    toString: function() { return this.low + ' -> ' + this.high; },
+    toString: function() { return this.low + ' > ' + this.high; },
     movesParallelTo: function(other) {
       return this.delta == other.delta && this.low.magnitude() != other.low.magnitude() && this.lowVoice == other.lowVoice && this.highVoice == other.highVoice;
     }
@@ -119,7 +130,7 @@ function newNote(step, octave, alter, duration) {
     alter: alter,
     duration: duration,
     getSymbol: function() { 
-      return this.step + ({ '-1': '-', '-2': '--', '1': '+', '2': '++' }[this.alter] || '') + this.octave;
+      return this.step + ({ '-1': 'b', 'bb': '--', '1': '#', '2': '##' }[this.alter] || '') + this.octave;
     },
     toString: function() { return this.getSymbol() },
     magnitude: function() { return (this.octave * 12) + NOTE_OFFSETS[this.step] + this.alter; }
