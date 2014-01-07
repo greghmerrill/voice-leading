@@ -1,0 +1,81 @@
+<html>
+
+<head>
+<title>How's My Voice Leading?</title>
+<style>
+.violation {
+  color: red;
+}
+body {
+  font-family: sans-serif;
+}
+</style>
+<script src="jquery-2.0.3.js"></script>
+<script src="voice-leading-validator.js"></script>
+<script>
+$(document).ready(function() {
+  $('#validate').click(function() {
+    $('.violation').remove();
+    $('.clean').remove();
+    try {
+      xml = $.parseXML($('#musicxml').val());
+      var violations = validate(xml);
+      if (violations.length == 0) {
+        $('#violations').append('<div class="clean">No errors detected!</div>');
+      }
+      $(violations).each(function() {
+        $('#violations').append('<div class="violation">' + this.error + '</div>');
+      });
+    }
+    catch (err)  {
+      $('#violations').append('<div class="violation">Failed to process.  ' + err + '</div>');
+    }
+    
+    $('html, body').animate({
+        scrollTop: $("#violations").offset().top
+      }, 1000);
+  });
+});
+</script>
+</head>
+
+<body style="width: 800px">
+<h2>How's My Voice Leading?</h2>
+
+<p/>
+This program attempts to detect common errors in traditional four-part harmony.  
+At present, the following rules of voice leading are checked:
+<ul>
+  <li>Acceptable Vocal Range</li>
+  <li>Parallel Fifths</li>
+  <li>Parallel Octaves</li>
+</ul>
+
+<p/>
+Using a music notation program such as <a href="http://www.noteflight.com">NoteFlight</a>, export your four-part harmony to <a href="http://www.musicxml.com/">MusicXML</a> and
+paste the XML content below, then press "Submit".
+
+<p/>
+<div style="background-color: #eeeeee; width: 700; padding: 12 12 12 12">
+Paste your MusicXML here:<br/>
+<textarea id="musicxml" rows="8" cols="80"></textarea>
+
+<p>
+<form>
+<input type="button" name="Validate" value="Submit" id="validate"/>
+</form>
+</div>
+
+<p/>
+<div id="violations" style="color: red">
+</div>
+
+
+<p/>
+<i>Inspired by Peter Edwards' Coursera course: <a href="https://www.coursera.org/course/classicalcomp">Write Like Mozart: An Introduction to Classical Music Composition</a>.</i>
+
+
+</body>
+
+
+</html>
