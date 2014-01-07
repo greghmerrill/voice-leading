@@ -30,10 +30,10 @@ function validate(xml) {
         $.each(prevChordIntervals, function(j, prevInterval) {
           if (prevInterval.movesParallelTo(interval)) {
             if (interval.delta == 7) {
-              violations.push({ error: "Parallel 5th: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval});
+              violations.push({ error: "Parallel 5ths: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval});
             }
             else if (interval.delta == 12) {
-              violations.push({ error: "Parallel Octave: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval});
+              violations.push({ error: "Parallel Octaves: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval});
             }
           }
         });
