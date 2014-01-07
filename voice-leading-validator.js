@@ -84,7 +84,7 @@ var NOTE_OFFSETS = { 'C' : 0, 'D' : 2, 'E' : 4, 'F' : 5, 'G' : 7, 'A' : 9, 'B' :
 var VOCAL_RANGE = $.map(['E2-C4', 'C3-F4', 'G3-D5', 'C4-A7'], function(pair) {
   return { low: newNote(pair[0], +pair[1], 0, 0).magnitude(), high: newNote(pair[3], +pair[4], 0, 0).magnitude() };
 });
-var SPACING = { 0: 17, 1: 12, 2: 12, 3: 12 };
+var SPACING = { 0: 19, 1: 12, 2: 12, 3: 12 };
 var VOICE_NAME = { 0: 'Bass', 1: 'Tenor', 2: 'Alto', 3: 'Soprano' };
 
 function newInterval(lowNote, highNote, lowVoice, highVoice) {
