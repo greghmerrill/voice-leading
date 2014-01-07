@@ -1,3 +1,6 @@
+// Copyright (c) 2014  Greg Merrill
+// See https://github.com/greghmerrill/voice-leading for license
+
 function validate(xml) {
   var measures = parseMeasures(xml);
 
