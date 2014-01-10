@@ -114,7 +114,7 @@ function parseMeasures(xml) {
   $(measures).each(function(i, m) { 
     $.each(m.chords, function(p, chord) {
       chord.notes.sort(function(a, b) { 
-        var delta = a.clef.charCodeAt() != b.clef.charCodeAt(); // F < G :-)
+        var delta = a.clef.charCodeAt() - b.clef.charCodeAt(); // F < G :-)
         return delta != 0 ? delta : a.magnitude() - b.magnitude(); 
       });
     });
