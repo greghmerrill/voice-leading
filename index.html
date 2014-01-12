@@ -49,15 +49,11 @@ function seeExample() {
 
 function test() {
   var expect = [     
-'Too low for vocal range: measure 1 D2',
 'Too low for vocal range: measure 7 A1',
-'Excessive spacing between Alto and Soprano: measure 2 F#4 > A5',
 'Excessive spacing between Bass and Tenor: measure 7 A1 > C#4',
-'Parallel Fifths: measure 1 D4 > A4 to measure 1 F#4 > C#5',
+'Parallel Fifths: measure 1 D3 > A3 to measure 2 G3 > D4',
 'Parallel Octaves: measure 4 B3 > B4 to measure 4 A3 > A4',
-'Parallel Octaves: measure 7 D3 > D4 to measure 8 A2 > A3',
-'Parallel Octaves: measure 8 A2 > A3 to measure 8 D3 > D4',
-'Voices crossed: Tenor and Alto: measure 8 C#4 > A3'
+'Voices crossed: Tenor and Alto: measure 6 D4 > B3'
   ];
   var actual = [];
   $.each(validate($.parseXML($('#sample-musicxml').val())), function(i, violation) {
@@ -118,7 +114,7 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
     <rights>Copyright ©</rights>
     <encoding>
       <software>Noteflight version 0.3.2</software>
-      <encoding-date>2014-01-09</encoding-date>
+      <encoding-date>2014-01-11</encoding-date>
       <supports attribute="new-system" element="print" type="no" value="no"/>
       <supports attribute="new-page" element="print" type="no" value="no"/>
     </encoding>
@@ -289,9 +285,8 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
       <note>
         <chord/>
         <pitch>
-          <step>C</step>
-          <alter>1</alter>
-          <octave>5</octave>
+          <step>A</step>
+          <octave>4</octave>
         </pitch>
         <duration>64</duration>
         <voice>1</voice>
@@ -336,7 +331,7 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
       <note>
         <pitch>
           <step>D</step>
-          <octave>2</octave>
+          <octave>3</octave>
         </pitch>
         <duration>64</duration>
         <voice>3</voice>
@@ -386,7 +381,7 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
       </direction>
       <note>
         <pitch>
-          <step>D</step>
+          <step>G</step>
           <octave>4</octave>
         </pitch>
         <duration>128</duration>
@@ -437,7 +432,7 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <chord/>
         <pitch>
           <step>A</step>
-          <octave>5</octave>
+          <octave>4</octave>
         </pitch>
         <duration>128</duration>
         <voice>1</voice>
@@ -465,8 +460,8 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
       <note>
         <chord/>
         <pitch>
-          <step>B</step>
-          <octave>3</octave>
+          <step>D</step>
+          <octave>4</octave>
         </pitch>
         <duration>128</duration>
         <voice>3</voice>
@@ -486,8 +481,8 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
       <note>
         <chord/>
         <pitch>
-          <step>A</step>
-          <octave>3</octave>
+          <step>D</step>
+          <octave>4</octave>
         </pitch>
         <duration>128</duration>
         <voice>3</voice>
@@ -1157,8 +1152,8 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
       </direction>
       <note>
         <pitch>
-          <step>D</step>
-          <octave>4</octave>
+          <step>B</step>
+          <octave>3</octave>
         </pitch>
         <duration>64</duration>
         <voice>1</voice>
@@ -1277,8 +1272,8 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
       <note>
         <chord/>
         <pitch>
-          <step>B</step>
-          <octave>3</octave>
+          <step>D</step>
+          <octave>4</octave>
         </pitch>
         <duration>64</duration>
         <voice>3</voice>
@@ -1542,8 +1537,8 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
       </direction>
       <note>
         <pitch>
-          <step>A</step>
-          <octave>3</octave>
+          <step>E</step>
+          <octave>4</octave>
         </pitch>
         <duration>64</duration>
         <voice>1</voice>
@@ -1557,7 +1552,7 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
       <note>
         <chord/>
         <pitch>
-          <step>E</step>
+          <step>A</step>
           <octave>4</octave>
         </pitch>
         <duration>64</duration>
