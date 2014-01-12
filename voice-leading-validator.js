@@ -2,7 +2,7 @@
 // See https://github.com/greghmerrill/voice-leading for license
 
 var NOTE_OFFSETS = { 'C' : 0, 'D' : 2, 'E' : 4, 'F' : 5, 'G' : 7, 'A' : 9, 'B' : 11 };
-var VOCAL_RANGE = $.map(['E2-C4', 'C3-F4', 'G3-D5', 'C4-A7'], function(pair) {
+var VOCAL_RANGE = $.map(['E2-C4', 'C3-F4', 'G3-D5', 'C4-A5'], function(pair) {
   return { low: newNote(pair[0], +pair[1], 0, 0).magnitude(), high: newNote(pair[3], +pair[4], 0, 0).magnitude() };
 });
 var SPACING = { 0: 19, 1: 12, 2: 12, 3: 12 };
@@ -14,10 +14,10 @@ var RULES = {
       $.each(chord.notes, function(i, note) {
         var range = VOCAL_RANGE[i];
         if (range.low > note.magnitude()) {
-          violations.push({ error: "Too low for vocal range: measure " + chord.measure + " " + note});
+          violations.push("Too low for vocal range: measure " + chord.measure + " " + note);
         }
         else if (range.high < note.magnitude()) {
-          violations.push({ error: "Too high for vocal range: measure " + chord.measure + " " + note});
+          violations.push("Too high for vocal range: measure " + chord.measure + " " + note);
         }
       });
     });
@@ -30,7 +30,7 @@ var RULES = {
           var n1 = chord.notes[i];
           var n2 = chord.notes[i + 1];
           if (n2.magnitude() - n1.magnitude() > spacing) {
-            violations.push({ error: "Excessive spacing between " + VOICE_NAME[i] + " and " + VOICE_NAME[i + 1] + ": measure " + chord.measure + " " + n1 + " > " + n2});
+            violations.push("Excessive spacing between " + VOICE_NAME[i] + " and " + VOICE_NAME[i + 1] + ": measure " + chord.measure + " " + n1 + " > " + n2);
           }
         }
       }
@@ -47,10 +47,10 @@ var RULES = {
           $.each(prevChordIntervals, function(j, prevInterval) {
             if (prevInterval.movesParallelTo(interval)) {
               if (interval.delta == 7) {
-                violations.push({ error: "Parallel Fifths: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval});
+                violations.push("Parallel Fifths: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval);
               }
               else if (interval.delta == 12) {
-                violations.push({ error: "Parallel Octaves: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval});
+                violations.push("Parallel Octaves: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval);
               }
             }
           });
@@ -67,7 +67,7 @@ var RULES = {
           var n1 = chord.notes[i];
           var n2 = chord.notes[i + 1];
           if (n2.magnitude() < n1.magnitude()) {
-            violations.push({ error: "Voices crossed: " + VOICE_NAME[i] + " and " + VOICE_NAME[i + 1] + ": measure " + chord.measure + " " + n1 + " > " + n2});
+            violations.push("Voices crossed: " + VOICE_NAME[i] + " and " + VOICE_NAME[i + 1] + ": measure " + chord.measure + " " + n1 + " > " + n2);
           }
         }
       }

@@ -29,7 +29,7 @@ $(document).ready(function() {
         $('#violations').append('<div class="clean">No errors detected!</div>');
       }
       $(violations).each(function() {
-        $('#violations').append('<div class="violation">' + this.error + '</div>');
+        $('#violations').append('<div class="violation">' + this + '</div>');
       });
     }
     catch (err)  {
@@ -49,7 +49,9 @@ function seeExample() {
 
 function test() {
   var expect = [     
+'Too high for vocal range: measure 5 B5',
 'Too low for vocal range: measure 7 A1',
+'Excessive spacing between Alto and Soprano: measure 5 C#4 > B5',
 'Excessive spacing between Bass and Tenor: measure 7 A1 > C#4',
 'Parallel Fifths: measure 1 D3 > A3 to measure 2 G3 > D4',
 'Parallel Octaves: measure 4 B3 > B4 to measure 4 A3 > A4',
@@ -57,7 +59,7 @@ function test() {
   ];
   var actual = [];
   $.each(validate($.parseXML($('#sample-musicxml').val())), function(i, violation) {
-    actual.push(violation.error);
+    actual.push(violation);
   });
   if (expect.join('~') != actual.join('~')) {
     console.info("TEST FAILED");
@@ -114,7 +116,7 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
     <rights>Copyright ©</rights>
     <encoding>
       <software>Noteflight version 0.3.2</software>
-      <encoding-date>2014-01-11</encoding-date>
+      <encoding-date>2014-01-12</encoding-date>
       <supports attribute="new-system" element="print" type="no" value="no"/>
       <supports attribute="new-page" element="print" type="no" value="no"/>
     </encoding>
@@ -1014,8 +1016,8 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
       <note>
         <chord/>
         <pitch>
-          <step>E</step>
-          <octave>4</octave>
+          <step>B</step>
+          <octave>5</octave>
         </pitch>
         <duration>128</duration>
         <voice>1</voice>
