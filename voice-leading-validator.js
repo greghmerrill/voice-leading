@@ -37,27 +37,15 @@ var RULES = {
     });
   },
   "Parallel Fifths and Octaves" : function(chords, violations) {
-    var prevChord;
-    var prevChordIntervals;
-    $.each(chords, function(p, chord) {
-      var chordIntervals = chord.getIntervals();
-      if (prevChordIntervals) {
-        // Compare current chord with prev to find parallel 5ths, 8ves
-        $.each(chordIntervals, function(i, interval) {
-          $.each(prevChordIntervals, function(j, prevInterval) {
-            if (prevInterval.movesParallelTo(interval)) {
-              if (interval.delta == 7) {
-                violations.push("Parallel Fifths: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval);
-              }
-              else if (interval.delta == 12) {
-                violations.push("Parallel Octaves: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval);
-              }
-            }
-          });
-        });
+    withChordPairs(chords, function(interval, prevInterval, chord, prevChord) {
+      if (prevInterval.movesParallelTo(interval)) {
+        if (interval.delta == 7) {
+          violations.push("Parallel Fifths: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval);
+        }
+        else if (interval.delta == 12) {
+          violations.push("Parallel Octaves: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval);
+        }
       }
-      prevChord = chord;
-      prevChordIntervals = chordIntervals;
     });
   },
   "Voice Crossing" : function(chords, violations) {
@@ -72,7 +60,34 @@ var RULES = {
         }
       }
     });
+  },
+  "Consecutive Fifths and Octaves by Contrary Motion" : function(chords, violations) {
+    withChordPairs(chords, function(interval, prevInterval, chord, prevChord) {
+      if (interval.delta == prevInterval.delta) { /* Not contrary motion */ return; }
+      if (interval.low.getSymbol() == prevInterval.low.getSymbol() && interval.high.getSymbol() == prevInterval.high.getSymbol()) { /* Not really "moving" */ return; }
+      if ((interval.delta % 12 == 0) && (prevInterval.delta % 12 == 0)) {
+        violations.push("Octaves by Contrary Motion: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval);
+      }
+      else if ((interval.delta % 12 == 7) && (prevInterval.delta % 12 == 7)) {
+        violations.push("Fifths by Contrary Motion: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval);
+      }
+    });
   }
+}
+
+function withChordPairs(chords, fn) {
+  var prevChord;
+  var prevChordIntervals;
+  $.each(chords, function(p, chord) {
+    var chordIntervals = chord.getIntervals();
+    if (prevChordIntervals && prevChord.notes.length == chord.notes.length) {
+      $.each(chordIntervals, function(i, interval) {
+        fn(interval, prevChordIntervals[i], chord, prevChord);
+      });
+    }
+    prevChord = chord;
+    prevChordIntervals = chordIntervals;
+  });
 }
 
 function validate(xml) {
@@ -87,7 +102,7 @@ function validate(xml) {
   });
 
   var violations = [];
-  $.each(["Vocal Range", "Spacing Between Voices", "Parallel Fifths and Octaves", "Voice Crossing"], function(i, rule) {
+  $.each(["Vocal Range", "Spacing Between Voices", "Parallel Fifths and Octaves", "Voice Crossing", "Consecutive Fifths and Octaves by Contrary Motion"], function(i, rule) {
     RULES[rule].call(this, consolidatedChords, violations);
   });
   
@@ -144,7 +159,7 @@ function newChord(pos) {
     getIntervals: function(chord) {
       var intervals = [];
       for (var i = 0; i < this.notes.length; i++) {
-        for (var j = i; j < this.notes.length; j++) {
+        for (var j = i + 1; j < this.notes.length; j++) {
           intervals.push(newInterval(this.notes[i], this.notes[j], i, j));
         }
       }
@@ -170,9 +185,10 @@ function newNote(step, octave, alter, duration, clef) {
     duration: duration,
     clef: clef,
     getSymbol: function() { 
-      return this.step + ({ '-1': 'b', 'bb': '--', '1': '#', '2': '##' }[this.alter] || '') + this.octave;
+      return this.step + ({ '-1': 'b', 'bb': '--', '1': '#', '2': '##' }[this.alter] || '');
     },
-    toString: function() { return this.getSymbol() },
+    getSymbolWithOctave: function() { return this.getSymbol() + this.octave; },
+    toString: function() { return this.getSymbolWithOctave() },
     magnitude: function() { return (this.octave * 12) + NOTE_OFFSETS[this.step] + this.alter; }
   };
 }

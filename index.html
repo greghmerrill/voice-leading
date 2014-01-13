@@ -55,7 +55,9 @@ function test() {
 'Excessive spacing between Bass and Tenor: measure 7 A1 > C#4',
 'Parallel Fifths: measure 1 D3 > A3 to measure 2 G3 > D4',
 'Parallel Octaves: measure 4 B3 > B4 to measure 4 A3 > A4',
-'Voices crossed: Tenor and Alto: measure 6 D4 > B3'
+'Voices crossed: Tenor and Alto: measure 6 D4 > B3',
+'Fifths by Contrary Motion: measure 6 G2 > D4 to measure 6 E3 > B3',
+'Octaves by Contrary Motion: measure 9 A3 > A3 to measure 9 D3 > D4'
   ];
   var actual = [];
   $.each(validate($.parseXML($('#sample-musicxml').val())), function(i, violation) {
@@ -84,6 +86,7 @@ The following rules of voice leading are checked:
   <li>Spacing Between Voices</li>
   <li>Parallel Fifths and Octaves</li>
   <li>Voice Crossing</li>
+  <li>Consecutive Fifths and Octaves by Contrary Motion</li>
 </ul>
 
 <p/>
@@ -108,11 +111,11 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
   "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="2.0">
   <work>
-    <work-title>I Died For Beauty (Crummy)</work-title>
+    <work-title>Poor Voiceleading Example</work-title>
   </work>
   <identification>
-    <creator type="composer">Name: _Greg Merrill__________________________________</creator>
-    <creator type="lyricist">Emily Dickinson</creator>
+    <creator type="composer">Greg Merrill</creator>
+    <creator type="lyricist"/>
     <rights>Copyright ©</rights>
     <encoding>
       <software>Noteflight version 0.3.2</software>
@@ -149,13 +152,10 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
     </staff-layout>
   </defaults>
   <credit page="1">
-    <credit-words font-size="24" default-x="612" default-y="1524" justify="center" valign="top">I Died For Beauty (Crummy)</credit-words>
+    <credit-words font-size="24" default-x="612" default-y="1524" justify="center" valign="top">Poor Voiceleading Example</credit-words>
   </credit>
   <credit page="1">
-    <credit-words font-size="12" default-x="1101.6000000000001" default-y="1474" justify="right" valign="top">Name: _Greg Merrill__________________________________</credit-words>
-  </credit>
-  <credit page="1">
-    <credit-words font-size="12" default-x="1101.6000000000001" default-y="1474" valign="top">Emily Dickinson</credit-words>
+    <credit-words font-size="12" default-x="1101.6000000000001" default-y="1474" justify="right" valign="top">Greg Merrill</credit-words>
   </credit>
   <part-list>
     <score-part id="P1">
@@ -206,11 +206,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         </direction-type>
         <sound tempo="90"/>
       </direction>
-      <direction placement="below">
-        <direction-type>
-          <words>I</words>
-        </direction-type>
-      </direction>
       <note>
         <pitch>
           <step>D</step>
@@ -249,10 +244,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>died</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -264,10 +255,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>died</text>
-        </lyric>
       </note>
       <note>
         <pitch>
@@ -279,10 +266,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>for</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -294,10 +277,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>for</text>
-        </lyric>
       </note>
       <backup>
         <duration>256</duration>
@@ -390,10 +369,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>half</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>begin</syllabic>
-          <text>beau</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -405,10 +380,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>half</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>begin</syllabic>
-          <text>beau</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -425,10 +396,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>half</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>end</syllabic>
-          <text>ty</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -440,10 +407,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>half</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>end</syllabic>
-          <text>ty</text>
-        </lyric>
       </note>
       <backup>
         <duration>256</duration>
@@ -504,10 +467,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>but</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -519,10 +478,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>but</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -538,11 +493,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <extend/>
-          <text>was</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -555,11 +505,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <extend/>
-          <text>was</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -576,10 +521,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>scarce</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -591,10 +532,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>scarce</text>
-        </lyric>
       </note>
       <note>
         <rest/>
@@ -612,10 +549,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>eighth</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>begin</syllabic>
-          <text>ad</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -627,10 +560,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>eighth</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>begin</syllabic>
-          <text>ad</text>
-        </lyric>
       </note>
       <backup>
         <duration>256</duration>
@@ -745,10 +674,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>middle</syllabic>
-          <text>just</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -760,10 +685,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>middle</syllabic>
-          <text>just</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -780,11 +701,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>end</syllabic>
-          <extend/>
-          <text>ed</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -796,11 +712,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>end</syllabic>
-          <extend/>
-          <text>ed</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -816,10 +727,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>in</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -831,10 +738,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>in</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -850,10 +753,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>the</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -866,10 +765,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>the</text>
-        </lyric>
       </note>
       <backup>
         <duration>256</duration>
@@ -978,10 +873,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>half</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>tomb</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -993,10 +884,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>half</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>tomb</text>
-        </lyric>
       </note>
       <note>
         <pitch>
@@ -1008,10 +895,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>half</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>when</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1023,10 +906,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>half</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>when</text>
-        </lyric>
       </note>
       <backup>
         <duration>256</duration>
@@ -1091,10 +970,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>one</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1107,10 +982,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>one</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -1126,10 +997,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>who</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1142,10 +1009,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>who</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -1161,10 +1024,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>died</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1176,10 +1035,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>died</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -1195,10 +1050,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>for</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1210,10 +1061,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>for</text>
-        </lyric>
       </note>
       <backup>
         <duration>256</duration>
@@ -1320,10 +1167,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>truth</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1335,24 +1178,17 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>truth</text>
-        </lyric>
       </note>
       <note>
         <pitch>
-          <step>E</step>
+          <step>C</step>
+          <alter>1</alter>
           <octave>4</octave>
         </pitch>
         <duration>64</duration>
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>was</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1364,10 +1200,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>was</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -1383,10 +1215,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>lain</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1399,10 +1227,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>lain</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -1418,10 +1242,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>in</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1434,10 +1254,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>in</text>
-        </lyric>
       </note>
       <backup>
         <duration>256</duration>
@@ -1478,9 +1294,8 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
       <note>
         <chord/>
         <pitch>
-          <step>C</step>
-          <alter>1</alter>
-          <octave>4</octave>
+          <step>E</step>
+          <octave>3</octave>
         </pitch>
         <duration>64</duration>
         <voice>3</voice>
@@ -1546,10 +1361,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>an</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1561,10 +1372,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>an</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -1580,10 +1387,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>begin</syllabic>
-          <text>ad</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1596,10 +1399,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>begin</syllabic>
-          <text>ad</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -1615,10 +1414,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>middle</syllabic>
-          <text>join</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1630,10 +1425,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>middle</syllabic>
-          <text>join</text>
-        </lyric>
       </note>
       <direction placement="below">
         <direction-type>
@@ -1650,10 +1441,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>end</syllabic>
-          <text>ing</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1665,10 +1452,6 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <voice>1</voice>
         <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>end</syllabic>
-          <text>ing</text>
-        </lyric>
       </note>
       <backup>
         <duration>256</duration>
@@ -1772,14 +1555,10 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
           <step>A</step>
           <octave>3</octave>
         </pitch>
-        <duration>256</duration>
+        <duration>64</duration>
         <voice>1</voice>
-        <type>whole</type>
+        <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>room.</text>
-        </lyric>
       </note>
       <note>
         <chord/>
@@ -1787,27 +1566,111 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
           <step>D</step>
           <octave>4</octave>
         </pitch>
-        <duration>256</duration>
+        <duration>64</duration>
         <voice>1</voice>
-        <type>whole</type>
+        <type>quarter</type>
         <staff>1</staff>
-        <lyric number="1" color="#000000">
-          <syllabic>single</syllabic>
-          <text>room.</text>
-        </lyric>
+      </note>
+      <note>
+        <pitch>
+          <step>C</step>
+          <alter>1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <note>
+        <chord/>
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <note>
+        <pitch>
+          <step>F</step>
+          <alter>1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <note>
+        <chord/>
+        <pitch>
+          <step>D</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <note>
+        <rest/>
+        <duration>64</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
       </note>
       <backup>
         <duration>256</duration>
       </backup>
       <attributes/>
       <note>
+        <rest/>
+        <duration>64</duration>
+        <voice>3</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note>
+        <pitch>
+          <step>A</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>3</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note>
+        <pitch>
+          <step>D</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>3</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note>
+        <rest/>
+        <duration>64</duration>
+        <voice>3</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>256</duration>
+      </backup>
+      <note>
         <pitch>
           <step>D</step>
           <octave>3</octave>
         </pitch>
-        <duration>256</duration>
-        <voice>3</voice>
-        <type>whole</type>
+        <duration>64</duration>
+        <voice>4</voice>
+        <type>quarter</type>
         <staff>2</staff>
       </note>
       <note>
@@ -1817,9 +1680,36 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
           <alter>1</alter>
           <octave>3</octave>
         </pitch>
-        <duration>256</duration>
-        <voice>3</voice>
-        <type>whole</type>
+        <duration>64</duration>
+        <voice>4</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note>
+        <pitch>
+          <step>A</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>4</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note>
+        <pitch>
+          <step>D</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>4</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note>
+        <rest/>
+        <duration>64</duration>
+        <voice>4</voice>
+        <type>quarter</type>
         <staff>2</staff>
       </note>
       <barline location="right">
