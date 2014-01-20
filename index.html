@@ -75,7 +75,9 @@ function test() {
 '6 Voices crossed: Tenor and Alto: D4 > B3',
 '7 Excessive spacing between Bass and Tenor: A1 > C#4',
 '7 Too low for vocal range: A1',
-'9 Octaves by Contrary Motion: A3 > A3 to D3 > D4'
+'9 Hidden Octave: measure 9 E3 > D5 to measure 10 G3 > G5',
+'9 Octaves by Contrary Motion: A3 > A3 to D3 > D4',
+'10 Hidden Fifth: G3 > G5 to A2 > E5'
   ];
   var actual = [];
   $.each(validate($.parseXML($('#sample-musicxml').val())), function(i, violation) {
@@ -111,6 +113,7 @@ The following rules of voice leading are checked:
   <li>Parallel Fifths and Octaves</li>
   <li>Voice Crossing</li>
   <li>Consecutive Fifths and Octaves by Contrary Motion</li>
+  <li>Hidden (Direct) Fifths and Octaves</li>
 </ul>
 
 <p/>
@@ -143,7 +146,7 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
     <rights>Copyright ©</rights>
     <encoding>
       <software>Noteflight version 0.3.2</software>
-      <encoding-date>2014-01-12</encoding-date>
+      <encoding-date>2014-01-19</encoding-date>
       <supports attribute="new-system" element="print" type="no" value="no"/>
       <supports attribute="new-page" element="print" type="no" value="no"/>
     </encoding>
@@ -1640,7 +1643,21 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <staff>1</staff>
       </note>
       <note>
-        <rest/>
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <note>
+        <chord/>
+        <pitch>
+          <step>D</step>
+          <octave>5</octave>
+        </pitch>
         <duration>64</duration>
         <voice>1</voice>
         <type>quarter</type>
@@ -1678,7 +1695,21 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <staff>2</staff>
       </note>
       <note>
-        <rest/>
+        <pitch>
+          <step>E</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>3</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note>
+        <chord/>
+        <pitch>
+          <step>B</step>
+          <octave>3</octave>
+        </pitch>
         <duration>64</duration>
         <voice>3</voice>
         <type>quarter</type>
@@ -1736,6 +1767,113 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
         <type>quarter</type>
         <staff>2</staff>
       </note>
+    </measure>
+    <measure number="10">
+      <attributes/>
+      <note>
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <note>
+        <chord/>
+        <pitch>
+          <step>G</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <note>
+        <pitch>
+          <step>C</step>
+          <alter>1</alter>
+          <octave>5</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <note>
+        <chord/>
+        <pitch>
+          <step>E</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <note>
+        <rest/>
+        <duration>128</duration>
+        <voice>1</voice>
+        <type>half</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>256</duration>
+      </backup>
+      <attributes/>
+      <note>
+        <pitch>
+          <step>G</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>3</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note>
+        <chord/>
+        <pitch>
+          <step>B</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>3</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note>
+        <pitch>
+          <step>A</step>
+          <octave>2</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>3</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note>
+        <chord/>
+        <pitch>
+          <step>C</step>
+          <alter>1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>64</duration>
+        <voice>3</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note>
+        <rest/>
+        <duration>128</duration>
+        <voice>3</voice>
+        <type>half</type>
+        <staff>2</staff>
+      </note>
       <barline location="right">
         <bar-style>light-heavy</bar-style>
       </barline>
@@ -1755,6 +1893,10 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
 <p/>
 Didn't work for you?  This is a rough implementation which surely has some bugs.
 <a href="javascript:reportBug()">Send me a message<a/> and I'll investigate.  Please attach your MusicXML and a description of the problem.
+
+<p/>
+Please note that at present, this program works only for homorhythmic homophony ... in other words, the parts generally need to move together.  
+Pieces with polyphonic characteristics are unlikely to get correct results.
 
 <p/>
 <i>Inspired by Peter Edwards' Coursera course: <a href="https://www.coursera.org/course/classicalcomp">Write Like Mozart: An Introduction to Classical Music Composition</a>.</i>

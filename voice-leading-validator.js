@@ -66,11 +66,25 @@ var RULES = {
       if (interval.delta == prevInterval.delta) { /* Not contrary motion */ return; }
       if (interval.low.getSymbol() == prevInterval.low.getSymbol() && interval.high.getSymbol() == prevInterval.high.getSymbol()) { /* Not really "moving" */ return; }
       if ((interval.delta % 12 == 0) && (prevInterval.delta % 12 == 0)) {
-        violations.push({ measure: chord.measure, message: "Octaves by Contrary Motion: " + multiMeasureMessage(prevChord, prevInterval, chord, interval)});
+        violations.push({ measure: prevChord.measure, message: "Octaves by Contrary Motion: " + multiMeasureMessage(prevChord, prevInterval, chord, interval)});
       }
       else if ((interval.delta % 12 == 7) && (prevInterval.delta % 12 == 7)) {
-        violations.push({ measure: chord.measure, message: "Fifths by Contrary Motion: " + multiMeasureMessage(prevChord, prevInterval, chord, interval)});
+        violations.push({ measure: prevChord.measure, message: "Fifths by Contrary Motion: " + multiMeasureMessage(prevChord, prevInterval, chord, interval)});
       }
+    });
+  },
+  "Hidden (Direct) Fifths and Octaves" : function(chords, violations) {
+    withChordPairs(chords, function(interval, prevInterval, chord, prevChord) {
+      if (interval.lowVoice != 0 || interval.highVoice != 3) return;
+      if (interval.delta % 12 != 7 && interval.delta % 12 != 0) return;
+      
+      var lowDelta = prevInterval.low.magnitude() - interval.low.magnitude();
+      var highDelta = prevInterval.high.magnitude() - interval.high.magnitude();
+      if (Math.abs(lowDelta) < 3 || Math.abs(highDelta) < 3) return;
+      if ((lowDelta < 0 && highDelta > 0) || (lowDelta > 0 && highDelta < 0)) return;
+      
+      var type = interval.delta % 12 == 7 ? "Fifth" : "Octave"
+      violations.push({ measure: prevChord.measure, message: "Hidden " + type + ": " + multiMeasureMessage(prevChord, prevInterval, chord, interval)});
     });
   }
 }
@@ -108,7 +122,8 @@ function validate(xml) {
   });
 
   var violations = [];
-  $.each(["Vocal Range", "Spacing Between Voices", "Parallel Fifths and Octaves", "Voice Crossing", "Consecutive Fifths and Octaves by Contrary Motion"], function(i, rule) {
+  var rules = ["Vocal Range", "Spacing Between Voices", "Parallel Fifths and Octaves", "Voice Crossing", "Consecutive Fifths and Octaves by Contrary Motion", "Hidden (Direct) Fifths and Octaves"];
+  $.each(rules, function(i, rule) {
     RULES[rule].call(this, consolidatedChords, violations);
   });
   
