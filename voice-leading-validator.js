@@ -14,10 +14,10 @@ var RULES = {
       $.each(chord.notes, function(i, note) {
         var range = VOCAL_RANGE[i];
         if (range.low > note.magnitude()) {
-          violations.push("Too low for vocal range: measure " + chord.measure + " " + note);
+          violations.push({ measure: chord.measure, message: "Too low for vocal range: " + note});
         }
         else if (range.high < note.magnitude()) {
-          violations.push("Too high for vocal range: measure " + chord.measure + " " + note);
+          violations.push({ measure: chord.measure, message: "Too high for vocal range: " + note});
         }
       });
     });
@@ -30,7 +30,7 @@ var RULES = {
           var n1 = chord.notes[i];
           var n2 = chord.notes[i + 1];
           if (n2.magnitude() - n1.magnitude() > spacing) {
-            violations.push("Excessive spacing between " + VOICE_NAME[i] + " and " + VOICE_NAME[i + 1] + ": measure " + chord.measure + " " + n1 + " > " + n2);
+            violations.push({ measure: chord.measure, message: "Excessive spacing between " + VOICE_NAME[i] + " and " + VOICE_NAME[i + 1] + ": " + n1 + " > " + n2});
           }
         }
       }
@@ -39,11 +39,11 @@ var RULES = {
   "Parallel Fifths and Octaves" : function(chords, violations) {
     withChordPairs(chords, function(interval, prevInterval, chord, prevChord) {
       if (prevInterval.movesParallelTo(interval)) {
-        if (interval.delta == 7) {
-          violations.push("Parallel Fifths: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval);
+        if (interval.delta % 7 == 0) {
+          violations.push({ measure: prevChord.measure, message: "Parallel Fifths: " + multiMeasureMessage(prevChord, prevInterval, chord, interval)});
         }
-        else if (interval.delta == 12) {
-          violations.push("Parallel Octaves: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval);
+        else if (interval.delta % 12 == 0) {
+          violations.push({ measure: prevChord.measure, message: "Parallel Octaves: " + multiMeasureMessage(prevChord, prevInterval, chord, interval)});
         }
       }
     });
@@ -55,7 +55,7 @@ var RULES = {
           var n1 = chord.notes[i];
           var n2 = chord.notes[i + 1];
           if (n2.magnitude() < n1.magnitude()) {
-            violations.push("Voices crossed: " + VOICE_NAME[i] + " and " + VOICE_NAME[i + 1] + ": measure " + chord.measure + " " + n1 + " > " + n2);
+            violations.push({ measure: chord.measure, message: "Voices crossed: " + VOICE_NAME[i] + " and " + VOICE_NAME[i + 1] + ": " + n1 + " > " + n2});
           }
         }
       }
@@ -66,13 +66,19 @@ var RULES = {
       if (interval.delta == prevInterval.delta) { /* Not contrary motion */ return; }
       if (interval.low.getSymbol() == prevInterval.low.getSymbol() && interval.high.getSymbol() == prevInterval.high.getSymbol()) { /* Not really "moving" */ return; }
       if ((interval.delta % 12 == 0) && (prevInterval.delta % 12 == 0)) {
-        violations.push("Octaves by Contrary Motion: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval);
+        violations.push({ measure: chord.measure, message: "Octaves by Contrary Motion: " + multiMeasureMessage(prevChord, prevInterval, chord, interval)});
       }
       else if ((interval.delta % 12 == 7) && (prevInterval.delta % 12 == 7)) {
-        violations.push("Fifths by Contrary Motion: measure " + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval);
+        violations.push({ measure: chord.measure, message: "Fifths by Contrary Motion: " + multiMeasureMessage(prevChord, prevInterval, chord, interval)});
       }
     });
   }
+}
+
+function multiMeasureMessage(prevChord, prevInterval, chord, interval) {
+  return (prevChord.measure == chord.measure)
+    ? prevInterval + ' to ' + interval
+    : 'measure ' + prevChord.measure + ' ' + prevInterval + ' to measure ' + chord.measure + ' ' + interval;
 }
 
 function withChordPairs(chords, fn) {
@@ -104,6 +110,11 @@ function validate(xml) {
   var violations = [];
   $.each(["Vocal Range", "Spacing Between Voices", "Parallel Fifths and Octaves", "Voice Crossing", "Consecutive Fifths and Octaves by Contrary Motion"], function(i, rule) {
     RULES[rule].call(this, consolidatedChords, violations);
+  });
+  
+  violations.sort(function(v1, v2) {
+    var measureDelta = v1.measure - v2.measure;
+    return measureDelta || v1.message.localeCompare(v2.message);
   });
   
   return violations;
@@ -146,7 +157,8 @@ function newInterval(lowNote, highNote, lowVoice, highVoice) {
     delta: highNote.magnitude() - lowNote.magnitude(),
     toString: function() { return this.low + ' > ' + this.high; },
     movesParallelTo: function(other) {
-      return this.delta == other.delta && this.low.magnitude() != other.low.magnitude() && this.lowVoice == other.lowVoice && this.highVoice == other.highVoice;
+      return this.delta == other.delta && this.lowVoice == other.lowVoice && this.highVoice == other.highVoice
+        && !(this.low.magnitude() == other.low.magnitude() && this.high.magnitude() == other.high.magnitude());
     }
   }
 }

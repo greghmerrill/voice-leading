@@ -8,11 +8,21 @@ Copyright (c) 2014  Greg Merrill
 See https://github.com/greghmerrill/voice-leading for license
 -->
 <style>
-.violation {
-  color: red;
+.violation, .clean {
+  border-radius: 15px;
+  background-color: #eeeeee;
+  padding: 8px 8px 8px 8px;
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
 body {
   font-family: sans-serif;
+}
+.measure {
+  font-weight: bold;
+}
+.vmessage {
+  margin-left: 8px;
 }
 </style>
 <script src="jquery-2.0.3.js"></script>
@@ -25,11 +35,19 @@ $(document).ready(function() {
     try {
       var xml = $.parseXML($('#musicxml').val());
       var violations = validate(xml);
+      problemMeasures = [];
+      $.each(violations, function() {
+        if (!problemMeasures[this.measure]) problemMeasures[this.measure] = [];
+        problemMeasures[this.measure].push(this);
+      });
       if (violations.length == 0) {
-        $('#violations').append('<div class="clean">No errors detected!</div>');
+        $('#violations').append('<div class="clean"><span class="vmessage">No errors detected!</div></div>');
       }
-      $(violations).each(function() {
-        $('#violations').append('<div class="violation">' + this + '</div>');
+      $.each(problemMeasures, function(i) {
+        if (this.length) {
+          var html = $.map(this, function(v) { return '<div class="vmessage">' + v.message + '</div>' }).join('');
+          $('#violations').append('<div class="violation"><span class="measure">Measure ' + i + '</span><br/>' + html + '</div>');
+        }
       });
     }
     catch (err)  {
@@ -49,19 +67,19 @@ function seeExample() {
 
 function test() {
   var expect = [     
-'Too high for vocal range: measure 5 B5',
-'Too low for vocal range: measure 7 A1',
-'Excessive spacing between Alto and Soprano: measure 5 C#4 > B5',
-'Excessive spacing between Bass and Tenor: measure 7 A1 > C#4',
-'Parallel Fifths: measure 1 D3 > A3 to measure 2 G3 > D4',
-'Parallel Octaves: measure 4 B3 > B4 to measure 4 A3 > A4',
-'Voices crossed: Tenor and Alto: measure 6 D4 > B3',
-'Fifths by Contrary Motion: measure 6 G2 > D4 to measure 6 E3 > B3',
-'Octaves by Contrary Motion: measure 9 A3 > A3 to measure 9 D3 > D4'
+'1 Parallel Fifths: measure 1 D3 > A3 to measure 2 G3 > D4',
+'4 Parallel Octaves: B3 > B4 to A3 > A4',
+'5 Excessive spacing between Alto and Soprano: C#4 > B5',
+'5 Too high for vocal range: B5',
+'6 Fifths by Contrary Motion: G2 > D4 to E3 > B3',
+'6 Voices crossed: Tenor and Alto: D4 > B3',
+'7 Excessive spacing between Bass and Tenor: A1 > C#4',
+'7 Too low for vocal range: A1',
+'9 Octaves by Contrary Motion: A3 > A3 to D3 > D4'
   ];
   var actual = [];
   $.each(validate($.parseXML($('#sample-musicxml').val())), function(i, violation) {
-    actual.push(violation);
+    actual.push(violation.measure + ' ' + violation.message);
   });
   if (expect.join('~') != actual.join('~')) {
     console.info("TEST FAILED");
@@ -71,6 +89,12 @@ function test() {
   else {
     console.info("TEST PASSED");
   }
+}
+
+function reportBug() {
+  var href = $.map([110, 98, 106, 109, 117, 112, 59, 104, 127, 115, 102, 127, 104, 105, 110, 127, 102, 115, 115, 106, 127, 109, 109, 65, 104, 110, 98, 127, 106, 109, 47, 100, 112, 110], 
+    function(i) { return String.fromCharCode(i - 1); }).join('').replace(/~/g, '');
+  window.location.href = href;
 }
 </script>
 </head>
@@ -94,7 +118,7 @@ Using a music notation program such as <a href="http://www.noteflight.com">NoteF
 paste the XML content below, then press "Submit".  Errors will be shown below.
 
 <p/>
-<div style="background-color: #eeeeee; padding: 12px 12px 12px 12px; width: 670px">
+<div style="background-color: #eeeeee; padding: 12px 12px 12px 12px; border-radius: 15px; width: 776px">
 <div style="position: relative; width: 100%">
 Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href="javascript:seeExample()">See an example</a></i></span><br/><br/>
 </div>
@@ -1724,13 +1748,13 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
 </div>
 
 <p/>
-<div id="violations" style="color: red">
+<div id="violations">
 </div>
 
 
 <p/>
 Didn't work for you?  This is a rough implementation which surely has some bugs.
-<a href="https://github.com/greghmerrill/voice-leading/issues">Create an Issue<a/> and I'll investigate.
+<a href="javascript:reportBug()">Send me a message<a/> and I'll investigate.  Please attach your MusicXML and a description of the problem.
 
 <p/>
 <i>Inspired by Peter Edwards' Coursera course: <a href="https://www.coursera.org/course/classicalcomp">Write Like Mozart: An Introduction to Classical Music Composition</a>.</i>
