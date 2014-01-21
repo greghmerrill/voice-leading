@@ -1,7 +1,7 @@
 voice-leading
 =============
 
-Detects common errors in traditional four-part harmony in a MusicXML document
+Detects common errors in traditional four-part harmony in a MusicXML document.
 
 Available interactively at [greghmerrill.github.io/voice-leading/](http://greghmerrill.github.io/voice-leading/)
 
