@@ -39,7 +39,7 @@ var RULES = {
   "Parallel Fifths and Octaves" : function(chords, violations) {
     withChordPairs(chords, function(interval, prevInterval, chord, prevChord) {
       if (prevInterval.movesParallelTo(interval)) {
-        if (interval.delta % 7 == 0) {
+        if (interval.delta % 12 == 7) {
           violations.push({ measure: prevChord.measure, message: "Parallel Fifths: " + multiMeasureMessage(prevChord, prevInterval, chord, interval)});
         }
         else if (interval.delta % 12 == 0) {
