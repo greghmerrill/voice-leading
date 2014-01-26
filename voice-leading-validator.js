@@ -158,6 +158,7 @@ function parseMeasures(xml) {
         var delta = a.clef.charCodeAt() - b.clef.charCodeAt(); // F < G :-)
         return delta != 0 ? delta : a.magnitude() - b.magnitude(); 
       });
+      chord.notes = chord.notes.slice(0, 4);
     });
   });
   return measures;
