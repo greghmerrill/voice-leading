@@ -14,10 +14,10 @@ var RULES = {
       $.each(chord.notes, function(i, note) {
         var range = VOCAL_RANGE[i];
         if (range.low > note.magnitude()) {
-          violations.push({ measure: chord.measure, message: "Too low for vocal range: " + note});
+          violations.push({ measure: chord.measure, message: "Too low for " + VOICE_NAME[i] + " vocal range: " + note});
         }
         else if (range.high < note.magnitude()) {
-          violations.push({ measure: chord.measure, message: "Too high for vocal range: " + note});
+          violations.push({ measure: chord.measure, message: "Too high for " + VOICE_NAME[i] + " vocal range: " + note});
         }
       });
     });
@@ -151,6 +151,9 @@ function parseMeasures(xml) {
       parseMeasure($(this), measure, clefByStaff);
     });
   });
+
+  // Handles scenarios where entire measures are missing
+  measures = $.grep(measures, function(m) { return m; });
   
   $(measures).each(function(i, m) { 
     $.each(m.chords, function(p, chord) {
