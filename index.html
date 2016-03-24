@@ -99,7 +99,7 @@ function test() {
 function reportBug() {
   var href = $.map([110, 98, 106, 109, 117, 112, 59, 104, 127, 115, 102, 127, 104, 105, 110, 127, 102, 115, 115, 106, 127, 109, 109, 65, 104, 110, 98, 127, 106, 109, 47, 100, 112, 110], 
     function(i) { return String.fromCharCode(i - 1); }).join('').replace(/~/g, '');
-  window.location.href = href;
+  window.location.href = href + "?subject=I'm having trouble with \"How's My Voice Leading?\"&body=[Please describe your problem here]";
 }
 </script>
 </head>
