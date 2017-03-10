@@ -35,8 +35,8 @@ $(document).ready(function() {
   $('#validate').click(function() {
     $('.violation').remove();
     $('.clean').remove();
-    try {
-      var xml = $.parseXML($('#musicxml').val());
+
+    var xml = $.parseXML($('#musicxml').val());
       var violations = validate(xml);
       problemMeasures = [];
       $.each(violations, function() {
@@ -52,10 +52,6 @@ $(document).ready(function() {
           $('#violations').append('<div class="violation"><span class="measure">Measure ' + i + '</span><br/>' + html + '</div>');
         }
       });
-    }
-    catch (err)  {
-      $('#violations').append('<div class="violation">Failed to process.  ' + err + '</div>');
-    }
     
     $('html, body').animate({
         scrollTop: $("#violations").offset().top
@@ -119,14 +115,14 @@ The following rules of voice leading are checked:
   <li>Hidden (Direct) Fifths and Octaves</li>
 </ul>
 
-<p/>
+<p style="margin-top: 50px"/>
 Using a music notation program such as <a href="http://www.noteflight.com">NoteFlight</a> or <a href="http://musescore.org/">Musescore</a>, export your four-part harmony as <a href="http://www.musicxml.com/">MusicXML</a> and
 paste the XML content below, then press "Submit".  Errors will be shown below.
 
 <p/>
 <div style="background-color: #eeeeee; padding: 12px 12px 12px 12px; border-radius: 15px; width: 776px">
 <div style="position: relative; width: 100%">
-Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href="javascript:seeExample()">See an example</a></i></span><br/><br/>
+Paste your MusicXML here:<span style="position: absolute; right: 0px"></span><br/><br/>
 </div>
 
 <textarea id="musicxml" rows="8" cols="80"></textarea>
@@ -1891,6 +1887,13 @@ Paste your MusicXML here:<span style="position: absolute; right: 0px"><i><a href
 <p/>
 <div id="violations">
 </div>
+
+
+<p style="margin-top: 50px"/>
+Want to see an example?  <i><a href="javascript:seeExample()">Click here</a></i> to see what errors are detected for the following:</i>
+
+<p/>
+<img src="poor-voiceleading-example.jpg"/>
 
 
 <p/>
