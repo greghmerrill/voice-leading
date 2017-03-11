@@ -1,4 +1,4 @@
-// Copyright (c) 2014  Greg Merrill
+// Copyright (c) 2017 Greg Merrill
 // See https://github.com/greghmerrill/voice-leading for license
 
 var NOTE_OFFSETS = { 'C' : 0, 'D' : 2, 'E' : 4, 'F' : 5, 'G' : 7, 'A' : 9, 'B' : 11 };
@@ -12,12 +12,14 @@ var RULES = {
   "Vocal Range" : function(chords, violations) {
     $.each(chords, function(p, chord) {
       $.each(chord.notes, function(i, note) {
-        var range = VOCAL_RANGE[i];
-        if (range.low > note.magnitude()) {
-          violations.push({ measure: chord.measure, message: "Too low for " + VOICE_NAME[i] + " vocal range: " + note});
-        }
-        else if (range.high < note.magnitude()) {
-          violations.push({ measure: chord.measure, message: "Too high for " + VOICE_NAME[i] + " vocal range: " + note});
+        if (chord.notes.length == 4) {
+          var range = VOCAL_RANGE[i];
+          if (range.low > note.magnitude()) {
+            violations.push({ measure: chord.measure, message: "Too low for " + VOICE_NAME[i] + " vocal range: " + note});
+          }
+          else if (range.high < note.magnitude()) {
+            violations.push({ measure: chord.measure, message: "Too high for " + VOICE_NAME[i] + " vocal range: " + note});
+          }
         }
       });
     });
@@ -115,7 +117,12 @@ function validate(xml) {
 
   var consolidatedChords = [];
   $.each(measures, function(i, m) { 
-    $.each(m.chords, function(j, chord) { 
+    var sortedChords = [];
+    $.each(m.chords, function(j, chord) { sortedChords.push(chord); });
+    sortedChords.sort(function(a, b) { return a.index - b.index; });
+    console.info('Measure ' + (i+1));
+    $.each(sortedChords, function(j, chord) { 
+      console.info(chord.toString());
       chord.measure = m.number;
       consolidatedChords.push(chord);
     });
@@ -143,15 +150,29 @@ function parseMeasures(xml) {
     if (!clefByPartByStaff[partID]) {
       clefByPartByStaff[partID] = {};
     }
-    if (!clefByPartByStaff[partID][partID]) clefByPartByStaff[partID][partID] = sign; // default clef for part
-    clefByPartByStaff[partID][+$(this).attr('number')] = sign; // specific clef when there are multiple staves in the part
+    var octave = sign == 'G' ? 4 : 3;
+    var clefOctaveChange = 0;
+    if ($(this).find('clef-octave-change').length > 0) {
+      clefOctaveChange = +$(this).find('clef-octave-change').text();
+    }
+    var clef = {
+      sign: sign,
+      octave: octave,
+      clefOctaveChange: clefOctaveChange,
+      magnitude: octave * 12 + (clefOctaveChange * 12) + NOTE_OFFSETS[sign]
+    };
+    if (!clefByPartByStaff[partID][partID]) clefByPartByStaff[partID][partID] = clef; // default clef for part
+    clefByPartByStaff[partID][+$(this).attr('number')] = clef; // specific clef when there are multiple staves in the part
   });
 
   var measures = [];
   $(xml).find('part').each(function() {
     $(this).find('measure').each(function() {
       var i = $(this).attr('number') - 1;
-      var measure = measures[i] || { number: i + 1, chords: {} };
+      var measure = measures[i] || { 
+        number: i + 1, 
+        chords: {}
+      };
       measures[i] = measure;
       parseMeasure($(this), measure, clefByPartByStaff);
     });
@@ -163,7 +184,7 @@ function parseMeasures(xml) {
   $(measures).each(function(i, m) { 
     $.each(m.chords, function(p, chord) {
       chord.notes.sort(function(a, b) { 
-        var delta = a.clef.charCodeAt() - b.clef.charCodeAt(); // F < G :-)
+        var delta = a.clef.magnitude - b.clef.magnitude;
         return delta != 0 ? delta : a.magnitude() - b.magnitude(); 
       });
       chord.notes = chord.notes.slice(0, 4);
@@ -204,7 +225,7 @@ function newChord(pos) {
   };
 }
 
-function newNoteFromXml(node, clefByPartByStaff) {
+function newNoteFromXml(node, duration, clefByPartByStaff) {
   var partID = node.parent().parent().attr('id');
   var staff = +node.find('staff').text();
   var clef = clefByPartByStaff[partID][staff] || clefByPartByStaff[partID][partID];
@@ -212,7 +233,7 @@ function newNoteFromXml(node, clefByPartByStaff) {
     node.find('pitch').find('step').text(),
     node.find('pitch').find('octave').text(),
     +node.find('pitch').find('alter').text(),
-    +node.find('duration').text(),
+    duration,
     clef);
 }
 
@@ -238,15 +259,25 @@ function parseMeasure(xml, measure, clefByPartByStaff) {
   $(xml).find('note, backup').each(function() {
     var node = $(this);
     var type = node.prop('tagName');
+    
+    var divisions = 1;
+    var measWithDivisions = xml;
+    while ($(measWithDivisions).find('attributes').length == 0 || $($(measWithDivisions).find('attributes')[0]).find('divisions').length == 0) {
+      measWithDivisions = $(measWithDivisions).prev();
+    }
+    var divisions = +$($(measWithDivisions).find('attributes')[0]).find('divisions').text();
+
+    var duration = node.find('duration').text();
+    duration = duration / divisions;
+    
     if (type == 'backup') {
-      pos -= node.find('duration').text();
+      pos -= duration;
     }
     else { // note
       if (node.find('chord').size() == 1) {
         pos -= prevNote.duration;
       }
       
-      var duration = +node.find('duration').text();
       if (node.find('rest').size() == 1) {
         // For purposes of voice leading, treat rests as if they are extensions of the previous note
         if (prevNote) prevNote.duration += duration;
@@ -255,7 +286,7 @@ function parseMeasure(xml, measure, clefByPartByStaff) {
         var chord = measure.chords[pos] || newChord(pos);
         measure.chords[pos] = chord;
 
-        var note = newNoteFromXml(node, clefByPartByStaff);
+        var note = newNoteFromXml(node, duration, clefByPartByStaff);
         
         chord.notes.push(note);
         prevNote = note;
