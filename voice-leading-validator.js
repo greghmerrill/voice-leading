@@ -136,10 +136,15 @@ function validate(xml) {
 }
 
 function parseMeasures(xml) {
-  var clefByStaff = {};
+  var clefByPartByStaff = {};
   $(xml).find('clef').each(function() {
     var sign = $($(this).find('sign')[0]).text();
-    clefByStaff[+$(this).attr('number')] = sign;
+    var partID = $(this).parent().parent().parent().attr('id');
+    if (!clefByPartByStaff[partID]) {
+      clefByPartByStaff[partID] = {};
+    }
+    if (!clefByPartByStaff[partID][partID]) clefByPartByStaff[partID][partID] = sign; // default clef for part
+    clefByPartByStaff[partID][+$(this).attr('number')] = sign; // specific clef when there are multiple staves in the part
   });
 
   var measures = [];
@@ -148,7 +153,7 @@ function parseMeasures(xml) {
       var i = $(this).attr('number') - 1;
       var measure = measures[i] || { number: i + 1, chords: {} };
       measures[i] = measure;
-      parseMeasure($(this), measure, clefByStaff);
+      parseMeasure($(this), measure, clefByPartByStaff);
     });
   });
 
@@ -199,13 +204,16 @@ function newChord(pos) {
   };
 }
 
-function newNoteFromXml(node, clefByStaff) {
+function newNoteFromXml(node, clefByPartByStaff) {
+  var partID = node.parent().parent().attr('id');
+  var staff = +node.find('staff').text();
+  var clef = clefByPartByStaff[partID][staff] || clefByPartByStaff[partID][partID];
   return newNote(
     node.find('pitch').find('step').text(),
     node.find('pitch').find('octave').text(),
     +node.find('pitch').find('alter').text(),
     +node.find('duration').text(),
-    clefByStaff[+node.find('staff').text()]);
+    clef);
 }
 
 function newNote(step, octave, alter, duration, clef) {
@@ -224,7 +232,7 @@ function newNote(step, octave, alter, duration, clef) {
   };
 }
 
-function parseMeasure(xml, measure, clefByStaff) {
+function parseMeasure(xml, measure, clefByPartByStaff) {
   var pos = 0;
   var prevNote;
   $(xml).find('note, backup').each(function() {
@@ -247,7 +255,7 @@ function parseMeasure(xml, measure, clefByStaff) {
         var chord = measure.chords[pos] || newChord(pos);
         measure.chords[pos] = chord;
 
-        var note = newNoteFromXml(node, clefByStaff);
+        var note = newNoteFromXml(node, clefByPartByStaff);
         
         chord.notes.push(note);
         prevNote = note;
