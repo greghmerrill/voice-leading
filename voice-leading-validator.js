@@ -245,7 +245,7 @@ function newNote(step, octave, alter, duration, clef) {
     duration: duration,
     clef: clef,
     getSymbol: function() { 
-      return this.step + ({ '-1': 'b', 'bb': '--', '1': '#', '2': '##' }[this.alter] || '');
+      return this.step + ({ '-1': 'b', '-2': 'bb', '1': '#', '2': 'x' }[this.alter] || '');//Double sharp better represented by 'x': clearer.
     },
     getSymbolWithOctave: function() { return this.getSymbol() + this.octave; },
     toString: function() { return this.getSymbolWithOctave() },
